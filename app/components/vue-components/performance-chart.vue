@@ -204,7 +204,7 @@ export default {
       }
     },
     yAxisData() {
-      return this.chartData.map((item) => +item.performance * 100);
+      return this.chartData.map((item) => Math.round(item.performance * 100));
     },
   },
 

@@ -54,7 +54,11 @@
             width: 220px !important;
             span:nth-child(3) {
               font-weight: lighter !important;
-              margin-left: 0px !important;
+              margin-left: 10px !important;
+              float: none !important;
+            }
+            span:nth-child(3)::after {
+              content: '%';
             }
           }
         }
