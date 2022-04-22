@@ -21,7 +21,7 @@ import {
   VisualMapComponent,
 } from 'echarts/components';
 import VChart from 'vue-echarts';
-
+import axios from 'axios';
 use([
   CanvasRenderer,
   LineChart,
@@ -43,47 +43,15 @@ export default {
   data() {
     return {
       xlabel: 'HomePage',
-      chartData: [
-        {
-          date_ms: 1641772800000,
-          performance: 0.2,
-        },
-        {
-          date_ms: 1641859200000,
-          performance: 0.33,
-        },
-        {
-          date_ms: 1641945600000,
-          performance: 0.53,
-        },
-        {
-          date_ms: 1642032000000,
-          performance: 0.31,
-        },
-        {
-          date_ms: 1642118400000,
-          performance: 0.65,
-        },
-        {
-          date_ms: 1642204800000,
-          performance: 0.88,
-        },
-        {
-          date_ms: 1642291200000,
-          performance: 0.07,
-        },
-      ],
+      chartData: null,
     };
   },
-  mounted() {
-    // this.$emit("pass-default-datetimes", [moment(this.chartData[0].date_ms).format('YYYY MM DD'), moment(this.chartData[this.chartData.length - 1].date_ms).format('YYYY MM DD')])
-    this.$emit('passDefaultDatetimes', [
-      moment(this.chartData[0].date_ms).format('YYYY-MM-DD'),
-      moment(this.chartData[this.chartData.length - 1].date_ms).format(
-        'YYYY-MM-DD'
-      ),
-    ]);
+  created() {
+    axios.get('https://fe-task.getsandbox.com/performance').then((res) => {
+      this.chartData = res.data;
+    });
   },
+
   computed: {
     initOptions() {
       return {
@@ -176,38 +144,55 @@ export default {
     },
 
     xAxisData() {
-      let arrayTemp = this.chartData.sort((a, b) => a.date_ms - b.date_ms);
-      let maxDate = arrayTemp[arrayTemp.length - 1];
+      if (this.chartData) {
+        let arrayTemp = this.chartData.sort((a, b) => a.date_ms - b.date_ms);
+        let maxDate = arrayTemp[arrayTemp.length - 1];
 
-      let start = this.startDate
-        ? Date.parse(this.startDate)
-        : arrayTemp[0].date_ms;
+        let start = this.startDate
+          ? Date.parse(this.startDate)
+          : arrayTemp[0].date_ms;
 
-      //   console.log('START IS', moment(start));
+        //   console.log('START IS', moment(start));
 
-      let end = this.endDate ? Date.parse(this.endDate) : maxDate.date_ms;
+        let end = this.endDate ? Date.parse(this.endDate) : maxDate.date_ms;
 
-      //   console.log('End IS', moment(end));
+        //   console.log('End IS', moment(end));
 
-      if (start < maxDate.date_ms && this.endDate === null) {
-        return this.chartData
-          .filter((item) => item.date_ms >= start)
-          .map((item) => this.formatDate(item.date_ms));
-      }
+        if (start < maxDate.date_ms && this.endDate === null) {
+          return this.chartData
+            .filter((item) => item.date_ms >= start)
+            .map((item) => this.formatDate(item.date_ms));
+        }
 
-      if (start < maxDate.date_ms && end < maxDate.date_ms) {
-        return this.chartData
-          .filter((item) => item.date_ms >= start && item.date_ms <= end)
-          .map((item) => this.formatDate(item.date_ms));
-      } else {
-        return this.chartData.map((item) => this.formatDate(item.date_ms));
+        if (start < maxDate.date_ms && end < maxDate.date_ms) {
+          return this.chartData
+            .filter((item) => item.date_ms >= start && item.date_ms <= end)
+            .map((item) => this.formatDate(item.date_ms));
+        } else {
+          return this.chartData.map((item) => this.formatDate(item.date_ms));
+        }
       }
     },
     yAxisData() {
-      return this.chartData.map((item) => Math.round(item.performance * 100));
+      return (
+        this.chartData &&
+        this.chartData.map((item) => Math.round(item.performance * 100))
+      );
     },
   },
-
+  watch: {
+    chartData(val) {
+      if (val) {
+        console.log('char data ', this.chartData);
+        this.$emit('passDefaultDatetimes', [
+          moment(this.chartData[0].date_ms).format('YYYY-MM-DD'),
+          moment(this.chartData[this.chartData.length - 1].date_ms).format(
+            'YYYY-MM-DD'
+          ),
+        ]);
+      }
+    },
+  },
   methods: {
     formatDate(dateInMs) {
       console.log(moment(dateInMs));
