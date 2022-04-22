@@ -1,17 +1,34 @@
 angular.module('appModule').controller('homeController', homePageController);
 
-function homePageController(Employees, $scope) {
+function homePageController(
+  Employees,
+  $scope,
+  $location,
+  $stateParams,
+  $state
+) {
   const homePageVm = this;
   homePageVm.employees = [];
-  homePageVm.searchedValue = '';
+  $scope.searchedValue = $stateParams.filter || '';
+  homePageVm.searchedValue = $scope.searchedValue;
+
+  console.log($stateParams);
+
   $scope.onChange = function () {
     homePageVm.searchedValue = $scope.searchedValue;
+    $location.$$search.filter = $scope.searchedValue;
     console.log(homePageVm);
+
+    const queryParams = { filter: $scope.searchedValue };
+    console.log('STATE', $state);
+    $state.go('.', queryParams);
   };
 
   $scope.clear = function () {
     homePageVm.searchedValue = '';
     $scope.searchedValue = '';
+    const queryParams = { filter: '' };
+    $state.go('.', queryParams);
   };
 
   console.log(homePageVm);

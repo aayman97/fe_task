@@ -9,7 +9,7 @@ angular.module('appModule').component('employeesList', {
 });
 
 function EmployeesListComponent($scope, $sce) {
-  console.log(this);
+  console.log('employees : ', this);
 
   $scope.highlight = function (text, search) {
     if (!search) {
