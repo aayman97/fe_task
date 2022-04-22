@@ -1,0 +1,22 @@
+<div class="c-dashboard">
+  <div class="c-filters__container">
+    <div class="search_input_and_container">
+      <input
+        type="text"
+        ng-change="onChange()"
+        ng-model="searchedValue"
+        placeholder="search"
+      />
+      <button class="clear_button" ng-click="clear()">Clear</button>
+    </div>
+  </div>
+
+  <employees-list
+    employees-list="homePageVm.employees"
+    searched-value="homePageVm.searchedValue"
+  ></employees-list>
+
+  <div class="c-dashboard__footer">
+    <button class="c-button">Load More</button>
+  </div>
+</div>
