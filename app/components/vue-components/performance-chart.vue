@@ -43,15 +43,12 @@ export default {
   data() {
     return {
       xlabel: 'HomePage',
-      chartData: null,
     };
   },
   created() {
-    axios.get('https://fe-task.getsandbox.com/performance').then((res) => {
-      this.chartData = res.data;
-    });
+    console.log('STORE', this.$store);
+    this.$store.dispatch('setChartData');
   },
-
   computed: {
     initOptions() {
       return {
@@ -144,8 +141,10 @@ export default {
     },
 
     xAxisData() {
-      if (this.chartData) {
-        let arrayTemp = this.chartData.sort((a, b) => a.date_ms - b.date_ms);
+      if (this.$store.getters.getChartData) {
+        let arrayTemp = this.$store.getters.getChartData.sort(
+          (a, b) => a.date_ms - b.date_ms
+        );
         let maxDate = arrayTemp[arrayTemp.length - 1];
 
         let start = this.startDate
@@ -159,36 +158,44 @@ export default {
         //   console.log('End IS', moment(end));
 
         if (start < maxDate.date_ms && this.endDate === null) {
-          return this.chartData
+          return this.$store.getters.getChartData
             .filter((item) => item.date_ms >= start)
             .map((item) => this.formatDate(item.date_ms));
         }
 
         if (start < maxDate.date_ms && end < maxDate.date_ms) {
-          return this.chartData
+          return this.$store.getters.getChartData
             .filter((item) => item.date_ms >= start && item.date_ms <= end)
             .map((item) => this.formatDate(item.date_ms));
         } else {
-          return this.chartData.map((item) => this.formatDate(item.date_ms));
+          return this.$store.getters.getChartData.map((item) =>
+            this.formatDate(item.date_ms)
+          );
         }
       }
     },
     yAxisData() {
       return (
-        this.chartData &&
-        this.chartData.map((item) => Math.round(item.performance * 100))
+        this.$store.getters.getChartData &&
+        this.$store.getters.getChartData.map((item) =>
+          Math.round(item.performance * 100)
+        )
       );
     },
   },
   watch: {
-    chartData(val) {
+    '$store.getters.getchartData'(val) {
       if (val) {
-        console.log('char data ', this.chartData);
+        console.log('char data ', this.$store.getters.getChartData);
         this.$emit('passDefaultDatetimes', [
-          moment(this.chartData[0].date_ms).format('YYYY-MM-DD'),
-          moment(this.chartData[this.chartData.length - 1].date_ms).format(
+          moment(this.$store.getters.getChartData[0].date_ms).format(
             'YYYY-MM-DD'
           ),
+          moment(
+            this.$store.getters.getChartData[
+              this.$store.getters.getChartData.length - 1
+            ].date_ms
+          ).format('YYYY-MM-DD'),
         ]);
       }
     },
