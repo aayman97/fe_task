@@ -9,7 +9,6 @@ function EmployeesService($http) {
 
   const loadMoreEmployees = (pageNum) => {
     // [Load more empolyess logic goes here]
-    console.log(pageNum);
     const employeesUrl = `https://fe-task.getsandbox.com/employees?page=${pageNum}`;
 
     return $http.get(employeesUrl);

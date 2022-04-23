@@ -14,16 +14,12 @@ function homePageController(
   homePageVm.pageNumber = 1;
   homePageVm.numerOfPages = 0;
   homePageVm.loadingButton = false;
-  //   console.log('homePageVm : ', homePageVm);
-  //   console.log('$rootScope : ', $rootScope.$on);
 
   $scope.onChange = function () {
     homePageVm.searchedValue = $scope.searchedValue;
     $location.$$search.filter = $scope.searchedValue;
-    console.log(homePageVm);
 
     const queryParams = { filter: $scope.searchedValue };
-    console.log('STATE', $state);
     $state.go('.', queryParams);
   };
 
@@ -34,7 +30,6 @@ function homePageController(
     $state.go('.', queryParams);
   };
 
-  console.log(homePageVm);
   function activate() {
     homePageVm.loadingButton = true;
     Employees.getEmployees(homePageVm.pageNumber).then(({ data }) => {
@@ -51,7 +46,6 @@ function homePageController(
     homePageVm.pageNumber++;
     Employees.loadMoreEmployees(homePageVm.pageNumber).then(({ data }) => {
       homePageVm.employees = homePageVm.employees.concat(data.employees);
-      console.log(data);
       if (homePageVm.pageNumber === homePageVm.numerOfPages) {
         homePageVm.loadingButton = true;
       } else {

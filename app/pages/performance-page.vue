@@ -51,8 +51,6 @@ export default {
   },
   methods: {
     initializeDefaultDatetimes(arr) {
-      console.log('START', arr[0]);
-      console.log('END', arr[1]);
       this.defaultStartDate = arr[0];
       this.defaultEndDate = arr[1];
     },

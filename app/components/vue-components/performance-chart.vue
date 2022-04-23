@@ -21,7 +21,8 @@ import {
   VisualMapComponent,
 } from 'echarts/components';
 import VChart from 'vue-echarts';
-import axios from 'axios';
+const filterData = require('./filterDataFunction');
+
 use([
   CanvasRenderer,
   LineChart,
@@ -46,7 +47,6 @@ export default {
     };
   },
   created() {
-    console.log('STORE', this.$store);
     this.$store.dispatch('setChartData');
   },
   computed: {
@@ -141,38 +141,11 @@ export default {
     },
 
     xAxisData() {
-      if (this.$store.getters.getChartData) {
-        let arrayTemp = this.$store.getters.getChartData.sort(
-          (a, b) => a.date_ms - b.date_ms
-        );
-        let maxDate = arrayTemp[arrayTemp.length - 1];
-
-        let start = this.startDate
-          ? Date.parse(this.startDate)
-          : arrayTemp[0].date_ms;
-
-        //   console.log('START IS', moment(start));
-
-        let end = this.endDate ? Date.parse(this.endDate) : maxDate.date_ms;
-
-        //   console.log('End IS', moment(end));
-
-        if (start < maxDate.date_ms && this.endDate === null) {
-          return this.$store.getters.getChartData
-            .filter((item) => item.date_ms >= start)
-            .map((item) => this.formatDate(item.date_ms));
-        }
-
-        if (start < maxDate.date_ms && end < maxDate.date_ms) {
-          return this.$store.getters.getChartData
-            .filter((item) => item.date_ms >= start && item.date_ms <= end)
-            .map((item) => this.formatDate(item.date_ms));
-        } else {
-          return this.$store.getters.getChartData.map((item) =>
-            this.formatDate(item.date_ms)
-          );
-        }
-      }
+      return filterData.filterData(
+        this.$store.getters.getChartData,
+        this.endDate,
+        this.startDate
+      );
     },
     yAxisData() {
       return (
@@ -186,7 +159,6 @@ export default {
   watch: {
     '$store.getters.getchartData'(val) {
       if (val) {
-        console.log('char data ', this.$store.getters.getChartData);
         this.$emit('passDefaultDatetimes', [
           moment(this.$store.getters.getChartData[0].date_ms).format(
             'YYYY-MM-DD'
@@ -202,7 +174,6 @@ export default {
   },
   methods: {
     formatDate(dateInMs) {
-      console.log(moment(dateInMs));
       return moment(dateInMs).format('DD MMM YYYY');
     },
   },

@@ -5,7 +5,7 @@ angular
       enabled: true,
     });
   })
-  .config(($stateProvider) => {
+  .config(($stateProvider, $urlRouterProvider) => {
     $stateProvider
       .state({
         name: 'app',
@@ -19,5 +19,14 @@ angular
         name: 'team-performance',
         url: '/team-performance',
         template: '<v-performance-page></v-performance-page>',
+      })
+      .state('404client', {
+        url: '*path',
+        templateUrl: './pages/home-page/home-page.html',
       });
+    // $$urlRouterProvider.router.urlRouter.otherwise(
+    //   './pages/home-page/home-page.html'
+    // );
+
+    $urlRouterProvider.router.urlRouter.otherwise('/');
   });
