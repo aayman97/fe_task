@@ -15,12 +15,6 @@ function EmployeesService($http) {
     return $http.get(employeesUrl);
   };
 
-  //   const getNumberofPages = () => {
-  //     // [Load more empolyess logic goes here]
-  //     const employeesUrl = `https://fe-task.getsandbox.com/employees${pageNum}`;
-
-  //     return $http.get(employeesUrl);
-  //   };
   return {
     getEmployees,
     loadMoreEmployees,
