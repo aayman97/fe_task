@@ -17,6 +17,15 @@
   ></employees-list>
 
   <div class="c-dashboard__footer">
-    <button class="c-button">Load More</button>
+    <button
+      class="c-button"
+      ng-click="loadMore()"
+      ng-if="homePageVm.loadingButton === false"
+    >
+      Load More
+    </button>
+    <div class="page__indicator" ng-if="homePageVm.numerOfPages !== 0">
+      <h4>{{homePageVm.pageNumber}} / {{homePageVm.numerOfPages}}</h4>
+    </div>
   </div>
 </div>

@@ -119,3 +119,10 @@
   padding: 0 16px;
   border-radius: 4px;
 }
+.page__indicator {
+  width: 100px;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
